@@ -179,7 +179,7 @@ public class HomeController {
 
         return "redirect:/order/list";
     }
-    
+
 
     //Función para calcular los impuestos
     public List<Double> taxesCalculate(double subtotal){

@@ -79,7 +79,26 @@ public class ProductController {
         return "redirect:/product/list";
     }
 
+    //Listado de todos los productos con orden
+    @GetMapping(value= {"/listSort"})
+    public String ProductListSort(Model model, @RequestParam(name = "initiation", required = false) Integer initiation,
+                                  @RequestParam(name = "iterator", required = false) String iterator){
 
+        if (initiation == null) {
+            initiation = 0;
+
+        } else if (initiation > 0) {
+            initiation--;
+        }
+        List<Product> listaTotal = productRepository.findAll();
+        double cantPorPaginaDouble = Math.ceil(listaTotal.size() / 5);
+        int cantDePaginas = (int) cantPorPaginaDouble;
+        List<Product> lista = productRepository.sortProduct(iterator, initiation*5,5);
+        model.addAttribute("productList", lista);
+        model.addAttribute("cantDePaginas", cantDePaginas);
+        model.addAttribute("paginaActual", ++initiation);
+        return "listProduct";
+    }
 
 
 }

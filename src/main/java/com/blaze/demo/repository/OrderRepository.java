@@ -16,7 +16,4 @@ public interface OrderRepository extends JpaRepository<Order, Integer>{
     public List<Order> pagination_Orders(int initiation, int size);
 
 
-    //Cambio de status en el orden
-    @Query(value = "UPDATE orders SET `status` = ?1 WHERE `ordernumber` = ?2", nativeQuery = true)
-    public void changeStatus(String status, int id);
 }
