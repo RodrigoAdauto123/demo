@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"/>
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+
+
+</head>
+<body class="container mt-2">
+
+<h2 th:text=" 'Order N°'+  ${order.ordernumber}"></h2>
+
+<h4 th:text=" 'Customer      '+  ${order.customer}"></h4>
+<h4 th:text=" 'Status      '+  ${order.status}"></h4>
+<h4 th:text=" 'Date      '+  ${order.date}"></h4>
+
+<hr/>
+
+<table class="table table-sm">
+    <tr>
+        <th>N°</th>
+        <th>Name</th>
+        <th>Quantity</th>
+        <th>Unit Price</th>
+        <th>Cost</th>
+        <th>Actions</th>
+    </tr>
+
+    <tr th:each="detailOrder, info : ${listProducts}">
+        <td th:text="${info.index + 1}"></td>
+        <!-- Busqueda del nombre del producto comparando lista de detalles de producto con productos -->
+        <div th:each="product: ${list}">
+            <div th:if="${detailOrder.idproduct.idproduct == product.idproduct}">
+                <td th:text="${product.name}"></td>
+            </div>
+        </div>
+        <td th:text="${detailOrder.cantidad}"></td>
+        <td th:text="${detailOrder.unitprice}"></td>
+        <td th:text="${detailOrder.costototal}"></td>
+        <div th:if="${order.status == 'Pending'}">
+            <td>
+                <a class="btn btn-danger" th:href="@{'/order/deleteProductOfOrder' + '?id=' + ${detailOrder.iddetail}}">Delete</a>
+            </td>
+        </div>
+
+    </tr>
+
+
+</table>
+
+<div class="container row">
+    <div class="col-8" >
+
+    </div>
+    <div class="col-4">
+        <div th:if="${order.status == 'Pending'}">
+            <a class="btn btn-primary" th:href="@{'/order/createOrderWithProduct' + '?id=' + ${order.ordernumber}}">Add item+</a>
+        </div>
+        <h3 th:text=" 'Subtotal      '+  ${listPrice.get(0)}"></h3>
+        <h3>Taxes</h3>
+        <p th:text=" 'Total city Tax      '+  ${listPrice.get(1)}"></p>
+        <p th:text=" 'Total county Tax      '+  ${listPrice.get(2)}"></p>
+        <p th:text=" 'Total state Tax      '+  ${listPrice.get(3)}"></p>
+        <p th:text=" 'Total federal Tax      '+  ${listPrice.get(4)}"></p>
+        <p th:text=" 'Total taxes      '+  ${listPrice.get(5)}"></p>
+        <p th:text=" 'Total      '+  ${listPrice.get(6)}"></p>
+
+        <div class="mb-2" th:if="${order.status == 'Pending'}">
+            <a class="btn btn-primary" th:href="@{'/order/complete' + '?id=' + ${order.ordernumber}}">Complete Order</a>
+            <a class="btn btn-primary" th:href="@{'/order/reject' + '?id=' + ${order.ordernumber}}">Reject Order</a>
+        </div>
+    </div>
+
+
+</div>
+
+</body>
+</html>

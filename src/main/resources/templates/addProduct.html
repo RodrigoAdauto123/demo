@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Products</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" />
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" ></script>
+    <script>
+        //Alerta para compra exitosa de un producto
+        function newAlert(){
+            alert("You bought the product successfully")
+        }
+    </script>
+</head>
+<body class="container">
+<table class="table table-sm">
+    <tr>
+        <th>Product</th>
+        <th>Category</th>
+        <th>Price</th>
+        <th>Cantidad</th>
+        <th>Comprar</th>
+    </tr>
+    <tr th:each="product, info : ${productList}">
+        <form method="post" th:action="@{'/order/saveProduct'}">
+
+                <div class="form-group">
+                    <input name="idordernumber" th:value="${idordernumber}" type="hidden" class="form-control" id="idordernumber" hidden>
+                </div>
+
+
+                <div class="form-group">
+                    <input name="idproduct" class="form-control" type="hidden" id="idproduct" th:value="${product.idproduct}" hidden />
+                </div>
+
+
+
+
+        <td th:text="${product.name}" ></td>
+        <td th:text="${product.category}"></td>
+        <td>
+            <div class="form-group">
+                <input name="unitprice" th:value="${product.unitprice}" type="hidden" th:text=" '$'+  ${product.unitprice}" class="form-control" id="unitprice">
+            </div>
+
+        </td>
+            <td>
+                <div class="form-group">
+                    <input name="cantidad" class="form-control text-center" type="text" id="cantidad">
+                </div>
+            </td>
+
+        <td>
+            <button type="submit" class="btn btn-primary" onclick="newAlert()">Agregar</button></td>
+
+        </form>
+
+    </tr>
+</table>
+<a th:href="@{'/order/list'}" class="btn btn-danger">Terminar de comprar</a>
+
+</body>
+</html>

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>List of Products</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" />
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" ></script>
+<style>
+    th {
+        cursor: pointer;
+    }
+</style>
+    <script>
+        $(document).ready(function () {
+            $('th').each(function (col) {
+                $(this).hover(
+                    function () {
+                        $(this).addClass('focus');
+                    },
+                    function () {
+                        $(this).removeClass('focus');
+                    }
+                );
+                $(this).click(function () {
+                    if ($(this).is('.asc')) {
+                        $(this).removeClass('asc');
+                        $(this).addClass('desc selected');
+                        sortOrder = -1;
+                    } else {
+                        $(this).addClass('asc selected');
+                        $(this).removeClass('desc');
+                        sortOrder = 1;
+                    }
+                    $(this).siblings().removeClass('asc selected');
+                    $(this).siblings().removeClass('desc selected');
+                    var arrData = $('table').find('tbody >tr:has(td)').get();
+                    arrData.sort(function (a, b) {
+                        var val1 = $(a).children('td').eq(col).text().toUpperCase();
+                        var val2 = $(b).children('td').eq(col).text().toUpperCase();
+                        if ($.isNumeric(val1) && $.isNumeric(val2))
+                            return sortOrder == 1 ? val1 - val2 : val2 - val1;
+                        else
+                            return (val1 < val2) ? -sortOrder : (val1 > val2) ? sortOrder : 0;
+                    });
+                    $.each(arrData, function (index, row) {
+                        $('tbody').append(row);
+                    });
+                });
+            });
+        })
+    </script>
+</head>
+<body class="container">
+
+
+<h2 > <a th:href="@{'/order/list'}"> Order List</a></h2>
+<h2>Product List</h2>
+<a class="btn btn-primary mt-4 mb-4" th:href="@{'/product/create'}">New Product</a>
+<table class="table table-sm">
+    <tr>
+        <th>#</th>
+        <th>Name</th>
+        <th>Category</th>
+        <th>Price</th>
+        <th>Status</th>
+        <th>Actions</th>
+    </tr>
+    <tr th:each="product, info : ${productList}">
+        <td th:text="${info.index + 1}"></td>
+        <td th:text="${product.name}"></td>
+        <td th:text="${product.category}"></td>
+        <td th:text="${product.unitprice}"></td>
+        <td th:text="${product.active}"></td>
+        <td><a class="btn btn-primary" th:href="@{'/product/edit' + '?id=' + ${product.idproduct}}">Editar</a></td>
+    </tr>
+
+</table>
+
+
+<nav aria-label="Page navigation example">
+    <ul class="pagination justify-content-center" >
+
+        <span th:each="count, iterator : ${productList}">
+
+            <span th:if="${iterator.index} < ${cantDePaginas+1}">
+                <span th:if="${iterator.index} == ${paginaActual}">
+                <li class="page-item active"><a th:text="${paginaActual+1}" class="page-link" th:href="@{/product/list?inicio=} + ${iterator.index +1}"></a></li>
+                </span>
+                <span th:unless="${iterator.index} == ${paginaActual}">
+                    <li class="page-item active"><a class="page-link" th:text="${iterator.index +1}" th:href="@{/product/list?inicio=} + ${iterator.index +1}"></a></li>
+                </span>
+            </span>
+        </span>
+    </ul>
+</nav>
+
+</body>
+</html>
